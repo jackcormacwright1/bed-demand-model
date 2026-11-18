@@ -300,7 +300,18 @@ These sizes depend on the synthetic hospitals' long-stay shares (0–6% of admis
 
 ### 8.2 Are the uncertainty ranges honest?
 
-INTERVALS_TABLE
+For each of the 20 hospitals, three 95% ranges for core beds (all ward types) from the recommended method, against the true number:
+
+| Range | Average width (beds) | Contains the true number |
+|---|---|---|
+| Monte Carlo only (the original's confidence interval) | 0.9 | 4 of 20 |
+| Data-year bootstrap: weeks redrawn from nearby weeks | 14.4 | 13 of 20 |
+| ...plus the uncertainty in the year's average surge level (the recommended range) | 21.6 | 16 of 20 |
+
+- **The Monte Carlo interval isn't an uncertainty range for the beds.** It says how precisely the simulation has pinned down the model's own answer. The model's answer is off by between −8% and +10% across the hospitals, because each has only one year of data, and an interval a bed wide can't see that.
+- **Redrawing weeks captures most of the uncertainty from the data, but not all.** It can't show that the whole year was busier or quieter than usual. Adding the spread of a year's average surge level (section 6.2) brings the ranges from 13 to 16 of 20.
+- **The ranges are still too narrow.** 16 of 20 is 80%, against the 95% claimed. The four misses are the hospitals whose data years ran furthest from normal (in hospital 1, emergency admissions ran about 10% above their long-run rate), and in some of them one year's data gave a low estimate of how long surges last, and so of how far a year's average can drift. Several years of data would fix this; one year can't.
+
 
 ---
 
@@ -338,6 +349,7 @@ Code: [`tests/`](https://github.com/jackcormacwright1/bed-demand-model/tree/main
 | Surge persistence from one year is rough | A year contains only a dozen or so independent surges | Bed numbers move by a few beds with it; the data bootstrap carries the uncertainty |
 | Stays are resampled from the data year | Keeps the tail and each patient's flags | A stay longer than any seen can't occur; a long-stay tail fitted across several years would be steadier |
 | Scenario flags are invented | No real data | The scenario savings illustrate the method, not likely savings |
+| The data-year bootstrap with the surge level describes the uncertainty from one year | It is all one year can show | Its 95% ranges contained the truth in 16 of 20 hospitals: too narrow, mainly because one year can't say how busy a typical year is |
 
 ---
 

@@ -365,7 +365,8 @@ with tab_beds:
              f"{di.total['escalation_low']:.0f}–{di.total['escalation_high']:.0f}. These ranges are how far the bed "
              "numbers move when the model is refitted to bootstrap copies of the data year (weeks redrawn from nearby "
              "weeks, plus the uncertainty in the year's average surge level). They are much wider than the Monte Carlo "
-             "noise, which more simulations would shrink.")
+             "noise, which more simulations would shrink, but still somewhat too narrow: tested on 20 synthetic "
+             "hospitals, they contained the true number in 16.")
     st.dataframe(table, hide_index=True, width="stretch", height=35 * (len(table) + 1) + 3, column_config={
         "Ward type": st.column_config.TextColumn(width="medium"),
         "Admissions a day": st.column_config.NumberColumn(format="%.2f", width="small"),
