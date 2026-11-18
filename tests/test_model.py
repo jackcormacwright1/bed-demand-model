@@ -131,3 +131,12 @@ def test_the_projection_grows_with_admissions_and_shrinks_with_shorter_stays(ext
     shorter = total(simulate(m, n_sims=100, seed=2, years_ahead=5, los_improvement=0.02)).mean()
     assert grown == pytest.approx(base * 1.02 ** 5, rel=0.02)
     assert shorter == pytest.approx(base * 0.98 ** 5, rel=0.02)
+
+
+def test_year_level_spread_matches_simulated_years():
+    from bedmodel.arrivals import Surges
+    from bedmodel.model import year_level_sd
+    from bedmodel.synthetic import surge_paths
+    yearly = surge_paths(3000, 365, 0.92, 0.10, np.random.default_rng(8)).mean(axis=1)
+    assert np.std(yearly) == pytest.approx(year_level_sd(Surges(0.92, 0.10), 365), rel=0.08)
+    assert year_level_sd(Surges(0.0, 0.10), 365) == pytest.approx(0.10 / np.sqrt(365))

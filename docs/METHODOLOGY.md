@@ -165,7 +165,7 @@ How long surges last is estimated from whole weeks, which is steadier than compa
 
 $$B(\rho) = \frac{1}{49}\Big(7 + 2\sum_{\ell=1}^{6} (7 - \ell)\,\rho^{\ell}\Big)$$
 
-is the share of the daily variance that survives averaging over 7 days: $1/7 = 0.14$ if days are independent ($\rho = 0$), 0.80 if $\rho = 0.9$, and 1 if surges last for weeks. Solving for $\rho$ gives the persistence. In hospital 0 the estimates are $\sigma = 0.083$ and $\rho = 0.65$ (true: 0.10 and 0.92). One year holds only a dozen or so independent surges, so these are rough, and across 20 hospitals they vary a lot; the data bootstrap (section 6.2) carries that into the bed numbers. Surges matter less than the long stays: they add about 4 core and 7 escalation beds to hospital 0's true requirement of 209 and 224.
+is the share of the daily variance that survives averaging over 7 days: $1/7 = 0.14$ if days are independent ($\rho = 0$), 0.80 if $\rho = 0.9$, and 1 if surges last for weeks. Solving for $\rho$ gives the persistence. The surge's log-scale standard deviation is then $\sigma = \sqrt{\log(1 + s^2)}$, which is close to $s$ when $s$ is small. In hospital 0 the estimates are $\sigma = 0.083$ and $\rho = 0.65$ (true: 0.10 and 0.92). One year holds only a dozen or so independent surges, so these are rough, and across 20 hospitals they vary a lot; the data bootstrap (section 6.2) carries that into the bed numbers. Surges matter less than the long stays: they add about 4 core and 7 escalation beds to hospital 0's true requirement of 209 and 224.
 
 ### 4.8 Whole beds
 
@@ -215,9 +215,9 @@ $$s = \sigma\sqrt{\frac{1}{T}\Big(1 + 2\sum_{\ell=1}^{T-1}\big(1 - \tfrac{\ell}{
 
 > **Worked example.** With the true surge settings, $\sigma = 0.10$ and $\rho = 0.92$, this gives $s = 0.025$: a year's emergency admissions can easily run 3% above or below the long-run rate because of surges alone. Across the 20 synthetic hospitals the data years' average surge levels ranged from 0.96 to 1.08. In hospital 0 the fitted settings ($\sigma = 0.083$, $\rho = 0.65$) give only $s = 0.009$, because one year's estimate of the persistence is rough.
 
-The range of bed numbers across 30 to 40 copies is the uncertainty that comes from the data.
+The range of bed numbers across 30 copies (the middle 95%) is the uncertainty that comes from the data.
 
-> **Worked example.** Hospital 0, core beds for all ward types: 213 from the data year, with a bootstrap range of about 204 to 221. The true number is 209. The original-style Monte Carlo interval is about one bed wide and doesn't contain it.
+> **Worked example.** Hospital 0, core beds for all ward types: 213 from the data year, with a bootstrap range of 205 to 222. The true number is 209. The original-style Monte Carlo interval is about one bed wide and doesn't contain it.
 
 Section 8.2 checks across 20 hospitals whether these ranges contain the truth as often as they claim.
 
@@ -306,7 +306,7 @@ INTERVALS_TABLE
 
 ## 9. Checking the work
 
-Code: [`tests/`](https://github.com/jackcormacwright1/bed-demand-model/tree/main/tests) (21 automated tests, run with `pytest`)
+Code: [`tests/`](https://github.com/jackcormacwright1/bed-demand-model/tree/main/tests) (22 automated tests, run with `pytest`)
 
 - **Occupancy.** A 3-day stay occupies exactly three midnights; a removed admission occupies none; a stay running past the end of the year is still counted.
 - **Little's law.** With constant admissions and fixed stays, average occupancy equals admissions × stay to within 1%, and the night-to-night variance equals the mean, as for a Poisson count.
@@ -320,7 +320,7 @@ Code: [`tests/`](https://github.com/jackcormacwright1/bed-demand-model/tree/main
 - **Seasonality and surges** are recovered from five years of data: the emergency wave's size and peak, a persistence above 0.6 and a surge size between 0.05 and 0.15, and the August and Christmas dips in elective admissions.
 - **The bootstrap year** keeps every admission on its weekday and within the year, and elective admissions on weekdays.
 - **Projection.** Five years of 2% growth raise average occupancy by $1.02^5$, and five years of 2% shorter stays lower it by $0.98^5$, each to within 2%.
-- **Data bootstrap.** The range is ordered and covers every ward type, and the main estimate sits inside it (allowing for Monte Carlo noise).
+- **Data bootstrap.** The range is ordered and covers every ward type, and the main estimate sits inside it (allowing for Monte Carlo noise). The formula for the spread of a year's average surge level matches 3,000 simulated years to within 8%.
 - **Discharge targets** match the hand calculation in section 7.5.
 - **End to end.** On hospital 0, the recommended method is within 8% of the true core beds, the original method more than 10% below, and keeping the long stays alone moves the original up.
 
@@ -356,7 +356,7 @@ Code: [`tests/`](https://github.com/jackcormacwright1/bed-demand-model/tree/main
 | Original: extract, fit, cap, warm-up | finished spells of 1–60 days; Tukey exclusion + five distributions by KS; 90 days; 30 days | Original |
 | Recommended: stays, warm-up | all spells, Kaplan–Meier weights, resampled; 365 days | Recommended |
 | Simulated years | 500 (dashboard), 1,000 (scripts) | Both |
-| Data bootstrap | 30 (dashboard) or 40 (scripts) copies, weeks redrawn from within 4 weeks, 200 simulated years each | Recommended |
+| Data bootstrap | 30 copies, weeks redrawn from within 4 weeks, plus the year's surge level; 200 simulated years each | Recommended |
 | Projection | admissions +1.5% a year, stays −1% a year | Both |
 
 ---

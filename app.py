@@ -279,8 +279,8 @@ with st.sidebar:
         st.toggle("Emergency surges", key="surges", on_change=to_custom)
         st.toggle("365-day warm-up (otherwise 30)", key="long_warmup", on_change=to_custom)
     st.subheader("Planning")
-    st.slider("Core: share of days covered (%)", 70, 95, key="core_pct")
-    st.slider("Escalation: share of days covered (%)", 80, 99, key="esc_pct")
+    st.slider("Core: share of nights covered (%)", 70, 95, key="core_pct")
+    st.slider("Escalation: share of nights covered (%)", 80, 99, key="esc_pct")
     st.select_slider("Simulated years", options=[200, 500, 1000, 2000], key="sims",
                      help="More: steadier numbers, slower.")
     st.toggle("Show the true answer", key="show_truth",
@@ -322,18 +322,18 @@ with tab_beds:
         t_tot = total(truth)
         t_core, t_esc = beds_for(t_tot, core_q), beds_for(t_tot, esc_q)
         cov_c, cov_e = coverage(t_tot, b_core), coverage(t_tot, b_esc)
-        cols[0].markdown(kpi(f"Core beds, all ward types ({g['core_pct']}% of days)", f"{b_core:,}",
-                             f"The true answer is {t_core:,}. In the true year, {b_core:,} beds cover {cov_c:.0%} of days.",
-                             (abs(cov_c - core_q) <= 0.05, f"Covers {cov_c:.0%} of true days")), unsafe_allow_html=True)
-        cols[1].markdown(kpi(f"Escalation beds ({g['esc_pct']}% of days)", f"{b_esc:,}",
-                             f"The true answer is {t_esc:,}. In the true year, {b_esc:,} beds cover {cov_e:.0%} of days.",
-                             (abs(cov_e - esc_q) <= 0.03, f"Covers {cov_e:.0%} of true days")), unsafe_allow_html=True)
+        cols[0].markdown(kpi(f"Core beds, all ward types ({g['core_pct']}% of nights)", f"{b_core:,}",
+                             f"The true answer is {t_core:,}. In the true year, {b_core:,} beds cover {cov_c:.0%} of nights.",
+                             (abs(cov_c - core_q) <= 0.05, f"Covers {cov_c:.0%} of true nights")), unsafe_allow_html=True)
+        cols[1].markdown(kpi(f"Escalation beds ({g['esc_pct']}% of nights)", f"{b_esc:,}",
+                             f"The true answer is {t_esc:,}. In the true year, {b_esc:,} beds cover {cov_e:.0%} of nights.",
+                             (abs(cov_e - esc_q) <= 0.03, f"Covers {cov_e:.0%} of true nights")), unsafe_allow_html=True)
     else:
-        cols[0].markdown(kpi(f"Core beds, all ward types ({g['core_pct']}% of days)", f"{b_core:,}",
-                             f"Occupancy is at or below this on {coverage(tot, b_core):.0%} of simulated days."),
+        cols[0].markdown(kpi(f"Core beds, all ward types ({g['core_pct']}% of nights)", f"{b_core:,}",
+                             f"Occupancy is at or below this on {coverage(tot, b_core):.0%} of simulated nights."),
                          unsafe_allow_html=True)
-        cols[1].markdown(kpi(f"Escalation beds ({g['esc_pct']}% of days)", f"{b_esc:,}",
-                             f"Occupancy is at or below this on {coverage(tot, b_esc):.0%} of simulated days."),
+        cols[1].markdown(kpi(f"Escalation beds ({g['esc_pct']}% of nights)", f"{b_esc:,}",
+                             f"Occupancy is at or below this on {coverage(tot, b_esc):.0%} of simulated nights."),
                          unsafe_allow_html=True)
     cols[2].markdown(kpi("Average beds occupied", f"{tot.mean():,.0f}",
                          f"Busiest simulated night: {int(tot.max()):,}."), unsafe_allow_html=True)

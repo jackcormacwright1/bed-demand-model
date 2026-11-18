@@ -67,7 +67,7 @@ The original method is available in full (dashboard: *Method → Original*), and
 pip install -r requirements.txt
 streamlit run app.py
 pip install pytest tabulate
-python -m pytest                                    # 21 tests
+python -m pytest                                    # 22 tests
 python scripts/run_methods.py --hospitals 20         # methods against the truth (about 10 minutes)
 python scripts/run_intervals.py --hospitals 20       # are the uncertainty ranges honest? (about 10 minutes)
 ```
