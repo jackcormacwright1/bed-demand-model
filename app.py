@@ -12,6 +12,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "src"))  # works without installing the package
 
+# Streamlit reruns this script in the same process after a deploy, with the package's old modules still
+# imported. If any source file has changed since they were loaded, drop them so they are imported afresh.
+_SOURCE_STAMP = max(f.stat().st_mtime for f in (ROOT / "src" / "bedmodel").glob("*.py"))
+_loaded = sys.modules.get("bedmodel")
+if _loaded is not None and getattr(_loaded, "_source_stamp", None) != _SOURCE_STAMP:
+    for _name in [m for m in list(sys.modules) if m == "bedmodel" or m.startswith("bedmodel.")]:
+        del sys.modules[_name]
+
 import altair as alt  # noqa: E402
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
@@ -22,6 +30,8 @@ from bedmodel import BASELINE, simulate, total, true_occupancy  # noqa: E402
 from bedmodel.los import SpellPool  # noqa: E402
 from bedmodel.metrics import beds_for, coverage  # noqa: E402
 from bedmodel.model import DEFAULT_SCENARIOS, STANDARD_SCENARIOS, data_interval, discharge_targets  # noqa: E402
+
+sys.modules["bedmodel"]._source_stamp = _SOURCE_STAMP
 
 st.set_page_config(page_title="Bed demand model", page_icon="🛏️", layout="wide")
 
@@ -57,6 +67,8 @@ st.markdown(f"""
 .kpi .icon {{ display: inline-flex; width: 1.05rem; height: 1.05rem; border-radius: 50%; color: #fff;
               font-size: 0.72rem; font-weight: 700; align-items: center; justify-content: center; }}
 .kpi .note {{ color: {MUTED}; font-size: 0.78rem; margin-top: 0.45rem; line-height: 1.35; }}
+.kpi .value {{ white-space: nowrap; }}
+@media (max-width: 1100px) {{ .kpi .value {{ font-size: 1.45rem; }} }}
 .callout {{ background: #ffffff; border: 1px solid {GRID}; border-left: 4px solid {BLUE}; border-radius: 8px;
             padding: 0.85rem 1.1rem; margin: 0.3rem 0 1rem; }}
 .chart-note {{ color: {MUTED}; font-size: 0.8rem; margin: -0.3rem 0 0.4rem; }}
