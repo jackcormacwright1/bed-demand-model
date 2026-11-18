@@ -4,7 +4,7 @@ How many beds does each surgical ward type need next year, so that it has enough
 
 It is a from-scratch rebuild of a bed model I first wrote for NHS use, run on a **synthetic hospital** instead of real data. Because the process that generates the synthetic data is known, every bed number can be checked against the true answer, so the rebuild also measures which of the original method's choices matter and by how much.
 
-**Live dashboard:** *(to be deployed on Streamlit Community Cloud)*
+**Live dashboard:** [bed-demand-model.streamlit.app](https://bed-demand-model.streamlit.app)
 
 **All data here is synthetic.** See [Provenance](#provenance).
 
